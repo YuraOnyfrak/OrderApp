@@ -1,4 +1,5 @@
-﻿using OrderApp.Common.Abstract;
+﻿using OrderApp.Common;
+using OrderApp.Common.Abstract;
 using OrderApp.Common.Implementation;
 using OrderApp.Model;
 using OrderApp.Services.Abstract;
@@ -35,9 +36,13 @@ namespace OrderApp.Services.Implementation
                 await _orderRepository.SaveAsync();
 
                 result.Success = true;
+                result.Message = MessagesDictionary.GetErrorMessag("SuccessUpdated");
+            }
+            else
+            {
+                result.Message = MessagesDictionary.GetErrorMessag("Error");
             }
 
-                      
             return result;
 
         }

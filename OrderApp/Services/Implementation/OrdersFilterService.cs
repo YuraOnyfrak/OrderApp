@@ -1,4 +1,5 @@
-﻿using OrderApp.Common.Abstract;
+﻿using OrderApp.Common;
+using OrderApp.Common.Abstract;
 using OrderApp.Common.Implementation;
 using OrderApp.Entity;
 using OrderApp.Entity.EntityDTO;
@@ -69,9 +70,12 @@ namespace OrderApp.Services.Implementation
 
             dataResult.Data = orders;
 
-            return dataResult;
+            if (orders == null)
+            {
+                dataResult.Message = MessagesDictionary.GetErrorMessag("Empty");
+            }
 
-            
+            return dataResult;            
         }
     }
 }

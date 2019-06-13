@@ -1,4 +1,5 @@
-﻿using OrderApp.Common.Abstract;
+﻿using OrderApp.Common;
+using OrderApp.Common.Abstract;
 using OrderApp.Common.Implementation;
 using OrderApp.Entity;
 using OrderApp.Model;
@@ -42,7 +43,11 @@ namespace OrderApp.Services.Implementation
                         result.Success = true;
                     }
 
-                result.Success = true;
+                result.Success = true; result.Message = MessagesDictionary.GetErrorMessag("SuccessUpdated");
+            }
+            else
+            {
+                result.Message = MessagesDictionary.GetErrorMessag("Error");
             }
 
             return result;

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using OrderApp.Services.Abstract.Common;
 using OrderApp.Common.Implementation;
 using OrderApp.Common.Abstract;
+using System;
 
 namespace OrderApp.Services.Implementation
 {
@@ -41,23 +42,42 @@ namespace OrderApp.Services.Implementation
             _articlesRepository = articlesRepository;
         }
 
-
-		public async Task<IResult> ImportOrder()
-		{
+	    public async Task<IResult> ImportOrder()
+		{            
             IResult result = new Result();
 
-			string path = Path.Combine(_env.ContentRootPath, _settings.XmlFileName);						
-			string xmlInputData = string.Empty;
-			string xmlOutputData = string.Empty;			
-			
-			xmlInputData = await File.ReadAllTextAsync(path);
+            using (OrdersDBContext db = new OrdersDBContext())
+            { 
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        string path = Path.Combine(_env.ContentRootPath, _settings.XmlFileName);
+                        string xmlInputData = string.Empty;
+                        string xmlOutputData = string.Empty;
 
-			XML.Orders item = Deserialize(xmlInputData);
+                        xmlInputData = await File.ReadAllTextAsync(path);
 
-            //save to db
-            await SaveDataToDB(item);
+                        XML.Orders item = Deserialize(xmlInputData);
 
-            result.Success = true;
+
+                        //save to db
+                        await SaveDataToDB(item);
+
+                        result.Success = true;
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        result.Message = $"{MessagesDictionary.GetErrorMessag("Error")} Exception: {ex.Message}";
+
+                    }
+                }
+
+
+            }
 
             return result;
 		}
