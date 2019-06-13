@@ -1,6 +1,7 @@
 /orderapp/obj
 /orderapp/bin
 /.vs
+/.hg
 /.vscode
 /orderapp/.vscode
 *.user
